@@ -1,0 +1,6 @@
+.env
+/word_docs
+.mypy_cache/
+.vscode/
+venv/
+__pycache__/
