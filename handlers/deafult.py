@@ -17,33 +17,22 @@ router = Router()
 # Обработка команды СТАРТ вне состояний
 @router.message(CommandStart(), StateFilter(default_state))
 async def process_start_command(message: Message):
-    path = Path('database/database.json')
-    database = json.loads(path.read_text(encoding='utf-8'))
-    if message.from_user.id not in database['user']:
-        database['user'].append(message.from_user.id)
-        path.write_text(json.dumps(database), encoding='utf-8')
-        await message.answer(text='Просмотреть/добавить <b>сообщества</b> для парсинга\n\n'
-                                  'Настроить <b>расписание</b> парсинга\n\n'
-                                  'Собрать данные <b>сейчас</b>',
-                             reply_markup=main_kb)
-    else:
-        await message.answer(text='Просмотреть/добавить <b>сообщества</b> для парсинга\n\n'
-                                  'Настроить <b>расписание</b> парсинга\n\n'
-                                  'Собрать данные <b>сейчас</b>',
-                                  reply_markup=main_kb)
+
+    await message.answer(text='Просмотреть/добавить <b>сообщества</b> для парсинга\n\n'
+                                'Настроить <b>расписание</b> парсинга\n\n'
+                                'Собрать данные <b>сейчас</b>',
+                                reply_markup=main_kb)
 
 
 # Обработка нажатия кнопки ВЫСЛАТЬ ДАННЫЕ
 @router.message(F.text==LEXICON['parse_now'], StateFilter(default_state))
 async def process_parse_now_button(message: Message, bot: Bot):
-    path = Path('database/database.json')
-    database = json.loads(path.read_text(encoding='utf-8'))
     await message.answer(text=LEXICON['in_process'])
     await asyncio.sleep(5)
     tg_channels = FSInputFile('tg_channels.xlsx')
     vk_publics = FSInputFile('vk_publics.xlsx')
-    await bot.send_document(chat_id=database['user'][0], document=tg_channels)
-    await bot.send_document(chat_id=database['user'][0], document=vk_publics,
+    await bot.send_document(chat_id='1872453368', document=tg_channels)
+    await bot.send_document(chat_id='1872453368', document=vk_publics,
                             reply_markup=main_kb)
 
 
