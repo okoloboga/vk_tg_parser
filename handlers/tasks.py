@@ -49,8 +49,11 @@ async def process_add_command(message: Message, state: FSMContext):
     path = Path('database/database.json')
     database = json.loads(path.read_text(encoding='utf-8'))
     if key == 'TG':
-        if task not in database['tg_channels']:
-            database['tg_channels'].append(task)
+        if task[:task.find('https://t.me/')] not in database['tg_channels']:
+            https = task.find('https://t.me/')
+            dict_key = task[:https-1]
+            dict_value = task[https:]
+            database['tg_channels'].update({dict_key: dict_value})
             path.write_text(json.dumps(database), encoding='utf-8')
             await message.answer(text=LEXICON['complete'],
                                  reply_markup=add_public_kb)
@@ -86,7 +89,7 @@ async def process_delete_command(message: Message, state: FSMContext):
     database = json.loads(path.read_text(encoding='utf-8'))
     if key == 'TG':
         if task in database['tg_channels']:
-            database['tg_channels'].remove(task)
+            del database['tg_channels'][task]
             path.write_text(json.dumps(database), encoding='utf-8')
             await message.answer(text=LEXICON['complete'],
                                  reply_markup=add_public_kb)
