@@ -40,7 +40,7 @@ def check_wall_tg(group, client_tg):
 
 
 def file_writer_tg(data, keywords):
-    with open('tg_channels.csv', 'w', encoding='UTF-8') as file:
+    with (open('tg_channels.csv', 'w', encoding='UTF-8') as file):
         writer = csv.writer(file, delimiter=',', lineterminator='\n')
         writer.writerow(('Соцсеть', 'Паблик', 'username Канала', 'ID пользователя', 'Текст поста', 'Дата публикации'))
         for group, posts in data.items():
@@ -48,7 +48,9 @@ def file_writer_tg(data, keywords):
                 for post in posts:
                     if post is not None and 'message' in post:
                         for word in keywords:
-                            if word in post['message'] and (time.time()-13000000<post['date'].timestamp()):
+                            if (word in post['message'] or
+                                word.upper() in post['message'] or
+                                word.capitalize() in post['message']) and (time.time()-13000000<post['date'].timestamp()):
                                 writer.writerow(('TG ', group,
                                                  posts[0] if posts[0] is not None else 'нет username',
                                                  post['from_id']['user_id'] if post['from_id'] is not None else 'нет ID отправителя',
@@ -100,6 +102,8 @@ def file_writer_vk(data, keywords):
             for post in posts:
                 if type(post)!=str:
                     for word in keywords:
-                        if word in post['text'] and (time.time()-13000000<post['date']):
+                        if (word in post['text'] or
+                            word.upper() in post['text'] or
+                            word.capitalize() in post['text']) and (time.time()-13000000<post['date']):
                             a_pen.writerow(('VK', domain, posts[0], post['from_id'], post['text'],
                                             time.ctime(post['date'])))

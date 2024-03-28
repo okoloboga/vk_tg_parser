@@ -12,14 +12,6 @@ from services.parsing import check_wall_tg, file_writer_tg, check_wall_vk, file_
 def main_parsing(phone):
     with open('database/database.json', encoding='utf-8') as database_json:
         database = json.load(database_json)
-    try:
-        os.remove('tg_channels.csv')
-        os.remove('tg_channels.xlsx')
-        os.remove('vk_publics.csv')
-        os.remove('vk_publics.xlsx')
-    except FileNotFoundError:
-        print('NO VK/TG FILES')
-
 
     """TELEGRAM"""
     api_id = 23264414
@@ -51,11 +43,17 @@ def main_parsing(phone):
             if chat.title in database['tg_channels']:
                 groups.append(chat)
         except:
+            print('NO CHAT IN DATABASE')
             continue
 
     for group in groups:
         total_groups[group.title] = check_wall_tg(group, client)
     print('TG CHANNELS ADDED')
+    try:
+        os.remove('tg_channels.csv')
+        os.remove('tg_channels.xlsx')
+    except FileNotFoundError:
+        print('NO VK/TG FILES')
     file_writer_tg(total_groups, database['keywords'])
 
     print('TG COMPLETE')
@@ -66,6 +64,11 @@ def main_parsing(phone):
     for public_domain in database['vk_publics']:
         total_data[public_domain] = check_wall_vk(public_domain)
     print('VK PUBLICS ADDED')
+    try:
+        os.remove('vk_publics.csv')
+        os.remove('vk_publics.xlsx')
+    except FileNotFoundError:
+        print('NO VK/TG FILES')
     file_writer_vk(total_data, database['keywords'])
 
     print('VK COMPLETE')
