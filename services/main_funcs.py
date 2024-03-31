@@ -1,6 +1,7 @@
 import os
 import json
 
+
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty
 from telethon.sync import TelegramClient
@@ -8,18 +9,19 @@ from telethon.sync import TelegramClient
 from services.parsing import check_wall_tg, file_writer_tg, check_wall_vk, file_writer_vk
 
 
-def main_parsing(phone):
+def main_parsing(api_id, api_hash, phone):
     with open('database/database.json', encoding='utf-8') as database_json:
         database = json.load(database_json)
 
     """TELEGRAM"""
-    api_id = 23264414
-    api_hash = 'da3808010cb0370a88e770adb5338c9e'
+    api_id = api_id
+    api_hash = api_hash
     phone = phone
     print('TG PHONE:', phone)
 
     client = TelegramClient(phone, api_id, api_hash)
     client.start()
+
     print('TG CLIENT START')
 
     chats = []
