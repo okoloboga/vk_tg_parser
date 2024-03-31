@@ -1,4 +1,3 @@
-import pandas as pd
 import os
 import json
 
@@ -40,7 +39,7 @@ def main_parsing(phone):
 
     for chat in chats:
         try:
-            if chat.title in database['tg_channels']:
+            if chat.username in database['tg_channels']:
                 groups.append(chat)
         except:
             print('NO CHAT IN DATABASE')
@@ -54,11 +53,13 @@ def main_parsing(phone):
         os.remove('tg_channels.xlsx')
     except FileNotFoundError:
         print('NO VK/TG FILES')
-    file_writer_tg(total_groups, database['keywords'])
+    file_writer_tg(total_groups, database['keywords'], database['antiwords'])
 
     print('TG COMPLETE')
 
+
     """VK"""
+
     total_data = {}
 
     for public_domain in database['vk_publics']:
@@ -69,13 +70,6 @@ def main_parsing(phone):
         os.remove('vk_publics.xlsx')
     except FileNotFoundError:
         print('NO VK/TG FILES')
-    file_writer_vk(total_data, database['keywords'])
+    file_writer_vk(total_data, database['keywords'], database['antiwords'])
 
     print('VK COMPLETE')
-
-    vk_result = pd.read_csv("vk_publics.csv", encoding='utf8')
-    tg_result = pd.read_csv("tg_channels.csv", encoding='utf8')
-    vk_result.to_excel('vk_publics.xlsx', index=False, header=True)
-    tg_result.to_excel('tg_channels.xlsx', index=False, header=True)
-
-    print('WRITE COMPLETE')

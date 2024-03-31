@@ -3,11 +3,12 @@ import csv
 import requests
 from telethon.tl.functions.messages import GetHistoryRequest
 
-
 """TELEGRAM"""
+
+
 def check_wall_tg(group, client_tg):
-    limit = 100
-    total_count_limit = 100
+    limit = 500
+    total_count_limit = 500
     all_messages = []
     offset_id = 0
     total_messages = 0
@@ -38,30 +39,34 @@ def check_wall_tg(group, client_tg):
         print('NO USERNAME: ', group)
 
 
-
-def file_writer_tg(data, keywords):
+def file_writer_tg(data, keywords, antiwords):
     with (open('tg_channels.csv', 'w', encoding='UTF-8') as file):
         writer = csv.writer(file, delimiter=',', lineterminator='\n')
-        writer.writerow(('Соцсеть', 'Паблик', 'username Канала', 'ID пользователя', 'Текст поста', 'Дата публикации'))
+        writer.writerow(('Соцсеть', 'Паблик', 'username Канала', 'ID канала', 'ID сообщения',
+                         'ID пользователя', 'Текст поста', 'Дата публикации'))
         for group, posts in data.items():
             try:
                 for post in posts:
                     if post is not None and 'message' in post:
-                        for word in keywords:
-                            if (word in post['message'] or
-                                word.upper() in post['message'] or
-                                word.capitalize() in post['message']) and (time.time()-13000000<post['date'].timestamp()):
+                        if any(word in post['message'] for word in keywords):
+                            if any(antiword in post['message'] for antiword in antiwords):
+                                continue
+                            else:
                                 writer.writerow(('TG ', group,
                                                  posts[0] if posts[0] is not None else 'нет username',
-                                                 post['from_id']['user_id'] if post['from_id'] is not None else 'нет ID отправителя',
+                                                 post['peer_id']['channel_id'],
+                                                 post['id'],
+                                                 post['from_id']['user_id'] if post[
+                                                                                   'from_id'] is not None else 'нет ID отправителя',
                                                  post['message'], post['date']))
             except TypeError:
                 print('POST IS NONE TYPE')
 
 
 """VK"""
-def check_wall_vk(domain):
 
+
+def check_wall_vk(domain):
     count = 100
     offset = 0
     all_posts = []
@@ -69,23 +74,23 @@ def check_wall_vk(domain):
     version = 5.199
 
     group_info = requests.get('https://api.vk.com/method/groups.getById',
-                        params={
-                            'access_token': token,
-                            'v': version,
-                            'group_id': domain
-                        })
+                              params={
+                                  'access_token': token,
+                                  'v': version,
+                                  'group_id': domain
+                              })
 
     name = group_info.json()['response']['groups'][0]['name']
     all_posts.append(str(name))
     while offset < 100:
         response = requests.get('https://api.vk.com/method/wall.get',
-                                    params={
-                                        'access_token': token,
-                                        'v': version,
-                                        'domain': domain,
-                                        'count': count,
-                                        'offset': offset
-                                    }
+                                params={
+                                    'access_token': token,
+                                    'v': version,
+                                    'domain': domain,
+                                    'count': count,
+                                    'offset': offset
+                                }
                                 )
         data = response.json()['response']['items']
         offset += 100
@@ -94,16 +99,21 @@ def check_wall_vk(domain):
     return all_posts
 
 
-def file_writer_vk(data, keywords):
-    with open('vk_publics.csv', 'w', encoding="utf-8") as file:
+def file_writer_vk(data, keywords, antiwords):
+    with (open('vk_publics.csv', 'w', encoding="utf-8") as file):
         a_pen = csv.writer(file)
-        a_pen.writerow(('Соцсеть', 'id Паблика', 'Название паблика', 'ID Автора', 'Текст поста', 'Дата публикации'))
+        a_pen.writerow(
+            ('Соцсеть', 'ID Паблика', 'Название паблика', 'Ссылка', 'ID Автора', 'Текст поста', 'Дата публикации'))
         for domain, posts in data.items():
             for post in posts:
-                if type(post)!=str:
-                    for word in keywords:
-                        if (word in post['text'] or
-                            word.upper() in post['text'] or
-                            word.capitalize() in post['text']) and (time.time()-13000000<post['date']):
-                            a_pen.writerow(('VK', domain, posts[0], post['from_id'], post['text'],
+                if type(post) != str:
+                    if any(word in post['text'] for word in keywords):
+                        if any(antiword in post['text'] for antiword in antiwords):
+                            continue
+                        else:
+                            a_pen.writerow(('VK', domain, posts[0],
+                                            f"https://vk.com/{domain}?w=wall{post['owner_id']}_{post['id']}",
+                                            post['from_id'], post['text'],
                                             time.ctime(post['date'])))
+
+

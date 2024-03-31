@@ -1,5 +1,8 @@
 import asyncio
 import logging
+import pandas as pd
+import json
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from aiogram import Bot, Dispatcher
 
@@ -7,27 +10,45 @@ from config_data.config import Config, load_config
 from keyboards.main_menu import set_main_menu
 from handlers import other, tasks, deafult
 
+
 # Инициализация логгера
 logger = logging.getLogger(__name__)
 
-# Конфигурирование и запуск Бота
+
 async def main():
     # Конфигурирование логирование
     logging.basicConfig(
         level=logging.INFO,
         format='%(filename)s:%(lineno)d #%(levelname)-8s '
                '[%(asctime)s] - %(name)s - %(message)s')
-    
+
     # Выводим в консоль информацию о начале запуска бота
     logger.info('Starting bot')
 
     # Загружаем конфиг в переменную config
     config: Config = load_config()
+    dp = Dispatcher()
 
-    # Инициализируем бот в диспетчере
+    # инициализируем бот в диспетчере
     bot = Bot(token=config.tg_bot.token,
               parse_mode='HTML')
-    dp = Dispatcher()
+
+    tg_frame = pd.read_csv('tg_channels.csv').values.tolist()
+    vk_frame = pd.read_csv('vk_publics.csv').values.tolist()
+
+    async def message_sender(bot: Bot):
+        for line in tg_frame:
+            await bot.send_message(chat_id='+de6Go3ysCL44M2Ri', text=f'Канал: {line[1]}\n'
+                                                                      f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n\n'
+                                                                      f'{line[6]}')
+        for line in vk_frame:
+            await bot.send_message(chat_id='+de6Go3ysCL44M2Ri', text=f'Сообщество: {line[2]}\n'
+                                                                  f'Ссылка на пост: {line[3]}\n\n'                                                                      
+                                                                  f'{line[5]}')
+
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(message_sender, 'interval', seconds=10, kwargs={'bot': bot})
+    scheduler.start()
 
     # Настройка главного меню бота
     await set_main_menu(bot)
@@ -43,3 +64,4 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+

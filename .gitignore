@@ -1,6 +1,21 @@
+<<<<<<< HEAD
 .env
 /word_docs
 .mypy_cache/
 .vscode/
 venv/
 __pycache__/
+=======
+.env
+/word_docs
+.mypy_cache/
+.vscode/
+venv/
+__pycache__/
+tg_channels.csv
+tg_channels.xlsx
+vk_publics.csv
+vk_publics.xlsx
+79911549316.session
+79911549316.session-journal
+>>>>>>> 28b6213 (forwarder made, antiwords added)

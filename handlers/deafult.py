@@ -1,10 +1,9 @@
 import asyncio
-import json
+import pandas as pd
 
-from pathlib import Path
 from aiogram import F, Router, Bot
 from aiogram.filters import Command, CommandStart, StateFilter
-from aiogram.types import Message, FSInputFile
+from aiogram.types import Message
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 
@@ -17,23 +16,26 @@ router = Router()
 # Обработка команды СТАРТ вне состояний
 @router.message(CommandStart(), StateFilter(default_state))
 async def process_start_command(message: Message):
-
     await message.answer(text='Просмотреть/добавить <b>сообщества</b> для парсинга\n\n'
-                                'Настроить <b>расписание</b> парсинга\n\n'
-                                'Собрать данные <b>сейчас</b>',
-                                reply_markup=main_kb)
+                              'Настроить <b>расписание</b> парсинга\n\n'
+                              'Собрать данные <b>сейчас</b>',
+                         reply_markup=main_kb)
 
 
 # Обработка нажатия кнопки ВЫСЛАТЬ ДАННЫЕ
-@router.message(F.text==LEXICON['parse_now'], StateFilter(default_state))
+@router.message(F.text == LEXICON['send_now'], StateFilter(default_state))
 async def process_parse_now_button(message: Message, bot: Bot):
-    await message.answer(text=LEXICON['in_process'])
-    await asyncio.sleep(5)
-    tg_channels = FSInputFile('tg_channels.xlsx')
-    vk_publics = FSInputFile('vk_publics.xlsx')
-    await bot.send_document(chat_id='1872453368', document=tg_channels)
-    await bot.send_document(chat_id='1872453368', document=vk_publics,
-                            reply_markup=main_kb)
+    tg_frame = pd.read_csv('tg_channels.csv').values.tolist()
+    vk_frame = pd.read_csv('vk_publics.csv').values.tolist()
+    for line in tg_frame:
+        await bot.send_message(chat_id='+de6Go3ysCL44M2Ri', text=f'Канал: {line[1]}\n'
+                                                              f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n\n'
+                                                              f'{line[6]}')
+    for line in vk_frame:
+        await bot.send_message(chat_id='+de6Go3ysCL44M2Ri', text=f'Сообщество: {line[2]}\n'
+                                                              f'Ссылка на пост: {line[2]}\n\n'
+                                                              f'{line[5]}')
+    await message.answer(text=LEXICON['complete'])
 
 
 # Обработка /cancel вне состояний
@@ -65,8 +67,3 @@ async def process_cancel_command(message: Message, state: FSMContext):
     await message.answer(text='Отменено!',
                          reply_markup=main_kb)
     await state.clear()
-
-
-
-
-

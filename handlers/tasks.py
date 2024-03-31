@@ -51,7 +51,7 @@ async def process_add_command(message: Message, state: FSMContext):
     if key == 'TG':
         if task[:task.find('https://t.me/')] not in database['tg_channels']:
             https = task.find('https://t.me/')
-            dict_key = task[:https-1]
+            dict_key = task[:https - 1]
             dict_value = task[https:]
             database['tg_channels'].update({dict_key: dict_value})
             path.write_text(json.dumps(database), encoding='utf-8')
@@ -69,9 +69,18 @@ async def process_add_command(message: Message, state: FSMContext):
             await state.clear()
         else:
             await message.answer(text=LEXICON['yet_exist'])
-    else:
+    elif key == 'KW':
         if task not in database['keywords']:
             database['keywords'].append(task)
+            path.write_text(json.dumps(database), encoding='utf-8')
+            await message.answer(text=LEXICON['complete'],
+                                 reply_markup=add_public_kb)
+            await state.clear()
+        else:
+            await message.answer(text=LEXICON['yet_exist'])
+    else:
+        if task not in database['antiwords']:
+            database['antiwords'].append(task)
             path.write_text(json.dumps(database), encoding='utf-8')
             await message.answer(text=LEXICON['complete'],
                                  reply_markup=add_public_kb)
@@ -105,9 +114,18 @@ async def process_delete_command(message: Message, state: FSMContext):
             await state.clear()
         else:
             await message.answer(text=LEXICON['no_task'])
-    else:
+    elif key == 'KW':
         if task in database['keywords']:
             database['keywords'].remove(task)
+            path.write_text(json.dumps(database), encoding='utf-8')
+            await message.answer(text=LEXICON['complete'],
+                                 reply_markup=add_public_kb)
+            await state.clear()
+        else:
+            await message.answer(text=LEXICON['no_task'])
+    else:
+        if task in database['antiwords']:
+            database['antiwords'].remove(task)
             path.write_text(json.dumps(database), encoding='utf-8')
             await message.answer(text=LEXICON['complete'],
                                  reply_markup=add_public_kb)
@@ -126,8 +144,3 @@ async def warning_add_command(message: Message):
 @router.message(StateFilter(FSMMain.delete))
 async def warning_delete_command(message: Message):
     await message.answer(text=LEXICON['incorrect'])
-
-
-
-
-

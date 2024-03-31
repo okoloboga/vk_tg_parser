@@ -5,13 +5,11 @@ from lexicon.lexicon import LEXICON
 
 """Главное меню"""
 button_tasks = KeyboardButton(text=LEXICON['tasks'])
-#button_schedule = KeyboardButton(text=LEXICON['schedule'])
-button_parse_now = KeyboardButton(text=LEXICON['parse_now'])
+button_send_now = KeyboardButton(text=LEXICON['send_now'])
 
 main_kb_builder = ReplyKeyboardBuilder()
 main_kb_builder.row(button_tasks, width=1)
-#main_kb_builder.row(button_schedule, width=1)
-main_kb_builder.row(button_parse_now, width=1)
+main_kb_builder.row(button_send_now, width=1)
 
 main_kb: ReplyKeyboardMarkup = main_kb_builder.as_markup(
     one_time_keyboard=True,
