@@ -33,7 +33,7 @@ async def process_parse_now_button(message: Message, bot: Bot):
                                                               f'{line[6]}')
     for line in vk_frame:
         await bot.send_message(chat_id='-1002089059378', text=f'Сообщество: {line[2]}\n'
-                                                              f'Ссылка на пост: {line[2]}\n\n'
+                                                              f'Ссылка на пост: {line[3]}\n\n'
                                                               f'{line[5]}')
     await message.answer(text=LEXICON['complete'])
 
