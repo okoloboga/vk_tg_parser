@@ -38,11 +38,11 @@ async def main():
 
     async def message_sender(bot: Bot):
         for line in tg_frame:
-            await bot.send_message(chat_id='+de6Go3ysCL44M2Ri', text=f'Канал: {line[1]}\n'
+            await bot.send_message(chat_id='-1002089059378', text=f'Канал: {line[1]}\n'
                                                                       f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n\n'
                                                                       f'{line[6]}')
         for line in vk_frame:
-            await bot.send_message(chat_id='+de6Go3ysCL44M2Ri', text=f'Сообщество: {line[2]}\n'
+            await bot.send_message(chat_id='-1002089059378', text=f'Сообщество: {line[2]}\n'
                                                                   f'Ссылка на пост: {line[3]}\n\n'                                                                      
                                                                   f'{line[5]}')
 
