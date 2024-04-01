@@ -33,17 +33,22 @@ async def main():
     bot = Bot(token=config.tg_bot.token,
               parse_mode='HTML')
 
-    tg_frame = pd.read_csv('tg_channels.csv').values.tolist()
-    vk_frame = pd.read_csv('vk_publics.csv').values.tolist()
 
     async def message_sender(bot: Bot):
+        tg_frame = pd.read_csv('tg_channels.csv').values.tolist()
+        vk_frame = pd.read_csv('vk_publics.csv').values.tolist()
         for line in tg_frame:
+            await asyncio.sleep(3)
             await bot.send_message(chat_id='-1002089059378', text=f'Канал: {line[1]}\n'
-                                                                      f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n\n'
-                                                                      f'{line[6]}')
+                                                                  f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n'
+                                                                  f'Автор поста: {line[5]}\n'
+                                                                  f'Дата публикации: {line[-1]}\n\n'
+                                                                  f'{line[6]}')
         for line in vk_frame:
+            await asyncio.sleep(3)
             await bot.send_message(chat_id='-1002089059378', text=f'Сообщество: {line[2]}\n'
-                                                                  f'Ссылка на пост: {line[3]}\n\n'                                                                      
+                                                                  f'Ссылка на пост: {line[3]}\n'
+                                                                  f'Дата публикации: {line[-1]}\n\n'
                                                                   f'{line[5]}')
 
     scheduler = AsyncIOScheduler()

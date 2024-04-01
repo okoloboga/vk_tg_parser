@@ -17,8 +17,7 @@ router = Router()
 @router.message(CommandStart(), StateFilter(default_state))
 async def process_start_command(message: Message):
     await message.answer(text='Просмотреть/добавить <b>сообщества</b> для парсинга\n\n'
-                              'Настроить <b>расписание</b> парсинга\n\n'
-                              'Собрать данные <b>сейчас</b>',
+                              'Или собрать данные <b>сейчас</b>',
                          reply_markup=main_kb)
 
 
@@ -28,12 +27,17 @@ async def process_parse_now_button(message: Message, bot: Bot):
     tg_frame = pd.read_csv('tg_channels.csv').values.tolist()
     vk_frame = pd.read_csv('vk_publics.csv').values.tolist()
     for line in tg_frame:
+        await asyncio.sleep(3)
         await bot.send_message(chat_id='-1002089059378', text=f'Канал: {line[1]}\n'
-                                                              f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n\n'
+                                                              f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n'
+                                                              f'Автор поста: {line[5]}\n'
+                                                              f'Дата публикации: {line[-1]}\n\n'
                                                               f'{line[6]}')
     for line in vk_frame:
+        await asyncio.sleep(3)
         await bot.send_message(chat_id='-1002089059378', text=f'Сообщество: {line[2]}\n'
-                                                              f'Ссылка на пост: {line[3]}\n\n'
+                                                              f'Ссылка на пост: {line[3]}\n'
+                                                              f'Дата публикации: {line[-1]}\n\n'
                                                               f'{line[5]}')
     await message.answer(text=LEXICON['complete'])
 

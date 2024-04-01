@@ -7,8 +7,8 @@ from telethon.tl.functions.messages import GetHistoryRequest
 
 
 def check_wall_tg(group, client_tg):
-    limit = 500
-    total_count_limit = 500
+    limit = 100
+    total_count_limit = 100
     all_messages = []
     offset_id = 0
     total_messages = 0
@@ -48,7 +48,7 @@ def file_writer_tg(data, keywords, antiwords):
             try:
                 for post in posts:
                     if post is not None and 'message' in post:
-                        if any(word in post['message'] for word in keywords):
+                        if any(word in post['message'] for word in keywords) and (int(time.time())-2678400 < post['date'].timestamp()):
                             if any(antiword in post['message'] for antiword in antiwords):
                                 continue
                             else:
@@ -107,7 +107,7 @@ def file_writer_vk(data, keywords, antiwords):
         for domain, posts in data.items():
             for post in posts:
                 if type(post) != str:
-                    if any(word in post['text'] for word in keywords):
+                    if any(word in post['text'] for word in keywords) and (int(time.time())-2678400 < post['date']):
                         if any(antiword in post['text'] for antiword in antiwords):
                             continue
                         else:

@@ -23,6 +23,7 @@ async def process_task_button(message: Message):
     await message.answer(text=f"TG: {str(database['tg_channels'])}\n\n"
                               f"VK: {str(database['vk_publics'])}\n\n"
                               f"Ключевые слова: {str(database['keywords'])}\n\n"
+                              f"Слова-исключения: {str(database['antiwords'])}\n\n"
                               'Для выхода нажмите /cancel',
                          reply_markup=add_public_kb)
 
