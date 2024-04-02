@@ -8,7 +8,7 @@ from telethon.tl.functions.messages import GetHistoryRequest
 
 def check_wall_tg(group, client_tg):
     limit = 100
-    total_count_limit = 100
+    total_count_limit = 500
     all_messages = []
     offset_id = 0
     total_messages = 0
@@ -48,7 +48,7 @@ def file_writer_tg(data, keywords, antiwords):
             try:
                 for post in posts:
                     if post is not None and 'message' in post:
-                        if any(word in post['message'] for word in keywords) and (int(time.time())-5300000 < post['date'].timestamp()):
+                        if any(word in post['message'] for word in keywords) and (int(time.time())-1200000 < post['date'].timestamp()):
                             if any(antiword in post['message'] for antiword in antiwords):
                                 continue
                             else:
@@ -66,7 +66,7 @@ def file_writer_tg(data, keywords, antiwords):
 
 
 def check_wall_vk(domain):
-    count = 100
+    count = 500
     offset = 0
     all_posts = []
     token = '735bf6a6735bf6a6735bf6a6be704c6dc47735b735bf6a616ad7155515806ec7853c8b1'
@@ -81,7 +81,7 @@ def check_wall_vk(domain):
 
     name = group_info.json()['response']['groups'][0]['name']
     all_posts.append(str(name))
-    while offset < 100:
+    while offset < 500:
         response = requests.get('https://api.vk.com/method/wall.get',
                                 params={
                                     'access_token': token,
@@ -106,7 +106,7 @@ def file_writer_vk(data, keywords, antiwords):
         for domain, posts in data.items():
             for post in posts:
                 if type(post) != str:
-                    if any(word in post['text'] for word in keywords) and (int(time.time())-5300000 < post['date']):
+                    if any(word in post['text'] for word in keywords) and (int(time.time())-1200000 < post['date']):
                         if any(antiword in post['text'] for antiword in antiwords):
                             continue
                         else:
