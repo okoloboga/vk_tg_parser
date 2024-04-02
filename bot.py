@@ -41,7 +41,6 @@ async def main():
             await asyncio.sleep(3)
             await bot.send_message(chat_id='-1002089059378', text=f'Канал: {line[1]}\n'
                                                                   f'Ссылка на пост: https://t.me/{line[2]}/{line[4]}\n'
-                                                                  f'Автор поста: {line[5]}\n'
                                                                   f'Дата публикации: {line[-1]}\n\n'
                                                                   f'{line[6]}')
         for line in vk_frame:
