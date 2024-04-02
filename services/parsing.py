@@ -56,8 +56,7 @@ def file_writer_tg(data, keywords, antiwords):
                                                  posts[0] if posts[0] is not None else 'нет username',
                                                  post['peer_id']['channel_id'],
                                                  post['id'],
-                                                 post['from_id']['user_id'] if post[
-                                                                                   'from_id'] is not None else 'нет ID отправителя',
+                                                 post['from_id']['user_id'] if ('from_id' in post and 'user_id' in post['from_id']) else 'нет ID отправителя',
                                                  post['message'], post['date']))
             except TypeError:
                 print('POST IS NONE TYPE')
