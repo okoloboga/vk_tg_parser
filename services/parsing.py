@@ -8,7 +8,7 @@ from telethon.tl.functions.messages import GetHistoryRequest
 
 def check_wall_tg(group, client_tg):
     limit = 100
-    total_count_limit = 500
+    total_count_limit = 1000
     all_messages = []
     offset_id = 0
     total_messages = 0
