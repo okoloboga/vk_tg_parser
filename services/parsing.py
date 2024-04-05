@@ -8,7 +8,7 @@ from telethon.tl.functions.messages import GetHistoryRequest
 
 def check_wall_tg(group, client_tg):
     limit = 100
-    total_count_limit = 1000
+    total_count_limit = 500
     all_messages = []
     offset_id = 0
     total_messages = 0
@@ -48,15 +48,21 @@ def file_writer_tg(data, keywords, antiwords):
             try:
                 for post in posts:
                     if post is not None and 'message' in post:
-                        if any(word in post['message'] for word in keywords) and (int(time.time())- 2000000 < post['date'].timestamp()):
-                            if any(antiword in post['message'] for antiword in antiwords):
+                        if any(word in post['message'] for word in keywords
+                               ) or any(word.capitalize() in post['message'] for word in keywords
+                                        ) or any(word.upper() in post['message'] for word in keywords
+                                                 ) and (int(time.time()) - 2000000 < post['date'].timestamp()):
+                            if any(antiword in post['message'] for antiword in antiwords
+                                   ) or any(antiword.upper() in post['message'] for antiword in antiwords
+                                            ) or any(antiword.upper() in post['message'] for antiword in antiwords):
                                 continue
                             else:
                                 writer.writerow(('TG ', group,
                                                  posts[0] if posts[0] is not None else 'нет username',
                                                  post['peer_id']['channel_id'],
                                                  post['id'],
-                                                 post['from_id']['user_id'] if ('from_id' in post and 'user_id' in post['from_id']) else 'нет ID отправителя',
+                                                 post['from_id']['user_id'] if ('from_id' in post and 'user_id' in post[
+                                                     'from_id']) else 'нет ID отправителя',
                                                  post['message'], post['date']))
             except TypeError:
                 print('POST IS NONE TYPE')
@@ -66,7 +72,7 @@ def file_writer_tg(data, keywords, antiwords):
 
 
 def check_wall_vk(domain):
-    count = 500
+    count = 300
     offset = 0
     all_posts = []
     token = '735bf6a6735bf6a6735bf6a6be704c6dc47735b735bf6a616ad7155515806ec7853c8b1'
@@ -106,13 +112,16 @@ def file_writer_vk(data, keywords, antiwords):
         for domain, posts in data.items():
             for post in posts:
                 if type(post) != str:
-                    if any(word in post['text'] for word in keywords) and (int(time.time()) - 2000000 < post['date']):
-                        if any(antiword in post['text'] for antiword in antiwords):
+                    if any(word in post['text'] for word in keywords
+                           ) or any(word.capitalize() in post['text'] for word in keywords
+                                    ) or any(word.upper() in post['text'] for word in keywords
+                                             ) and (int(time.time()) - 2000000 < post['date'].timestamp()):
+                        if any(antiword in post['text'] for antiword in antiwords
+                               ) or any(antiword.upper() in post['text'] for antiword in antiwords
+                                        ) or any(antiword.upper() in post['text'] for antiword in antiwords):
                             continue
                         else:
                             a_pen.writerow(('VK', domain, posts[0],
                                             f"https://vk.com/{domain}?w=wall{post['owner_id']}_{post['id']}",
                                             post['from_id'], post['text'],
                                             time.ctime(post['date'])))
-
-
