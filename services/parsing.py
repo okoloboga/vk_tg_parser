@@ -48,10 +48,10 @@ def file_writer_tg(data, keywords, antiwords):
             try:
                 for post in posts:
                     if post is not None and 'message' in post:
-                        if any(word in post['message'] for word in keywords
+                        if (any(word in post['message'] for word in keywords
                                ) or any(word.capitalize() in post['message'] for word in keywords
                                         ) or any(word.upper() in post['message'] for word in keywords
-                                                 ) and (int(time.time()) - 2000000 < post['date'].timestamp()):
+                                                 )) and (int(time.time()) - 2000000 < post['date'].timestamp()):
                             if any(antiword in post['message'] for antiword in antiwords
                                    ) or any(antiword.upper() in post['message'] for antiword in antiwords
                                             ) or any(antiword.upper() in post['message'] for antiword in antiwords):
@@ -72,7 +72,7 @@ def file_writer_tg(data, keywords, antiwords):
 
 
 def check_wall_vk(domain):
-    count = 300
+    count = 100
     offset = 0
     all_posts = []
     token = '735bf6a6735bf6a6735bf6a6be704c6dc47735b735bf6a616ad7155515806ec7853c8b1'
@@ -112,10 +112,10 @@ def file_writer_vk(data, keywords, antiwords):
         for domain, posts in data.items():
             for post in posts:
                 if type(post) != str:
-                    if any(word in post['text'] for word in keywords
+                    if (any(word in post['text'] for word in keywords
                            ) or any(word.capitalize() in post['text'] for word in keywords
                                     ) or any(word.upper() in post['text'] for word in keywords
-                                             ) and (int(time.time()) - 2000000 < post['date']):
+                                             )) and (int(time.time()) - 2000000 < post['date']):
                         if any(antiword in post['text'] for antiword in antiwords
                                ) or any(antiword.upper() in post['text'] for antiword in antiwords
                                         ) or any(antiword.upper() in post['text'] for antiword in antiwords):
