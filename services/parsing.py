@@ -115,7 +115,7 @@ def file_writer_vk(data, keywords, antiwords):
                     if any(word in post['text'] for word in keywords
                            ) or any(word.capitalize() in post['text'] for word in keywords
                                     ) or any(word.upper() in post['text'] for word in keywords
-                                             ) and (int(time.time()) - 2000000 < post['date'].timestamp()):
+                                             ) and (int(time.time()) - 2000000 < post['date']):
                         if any(antiword in post['text'] for antiword in antiwords
                                ) or any(antiword.upper() in post['text'] for antiword in antiwords
                                         ) or any(antiword.upper() in post['text'] for antiword in antiwords):
