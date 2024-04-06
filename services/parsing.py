@@ -8,7 +8,7 @@ from telethon.tl.functions.messages import GetHistoryRequest
 
 def check_wall_tg(group, client_tg):
     limit = 100
-    total_count_limit = 1000
+    total_count_limit = 750
     all_messages = []
     offset_id = 0
     total_messages = 0
@@ -42,8 +42,7 @@ def check_wall_tg(group, client_tg):
 def file_writer_tg(data, keywords, antiwords):
     with (open('tg_channels.csv', 'w', encoding='UTF-8') as file):
         writer = csv.writer(file, delimiter=',', lineterminator='\n')
-        writer.writerow(('Соцсеть', 'Паблик', 'username Канала', 'ID канала', 'ID сообщения',
-                         'ID пользователя', 'Текст поста', 'Дата публикации'))
+        writer.writerow(('Паблик', 'username Канала', 'ID сообщения', 'Текст поста', 'Дата публикации'))
         for group, posts in data.items():
             try:
                 for post in posts:
@@ -57,12 +56,9 @@ def file_writer_tg(data, keywords, antiwords):
                                             ) or any(antiword.upper() in post['message'] for antiword in antiwords):
                                 continue
                             else:
-                                writer.writerow(('TG ', group,
+                                writer.writerow((group,
                                                  posts[0] if posts[0] is not None else 'нет username',
-                                                 post['peer_id']['channel_id'],
                                                  post['id'],
-                                                 post['from_id']['user_id'] if ('from_id' in post and 'user_id' in post[
-                                                     'from_id']) else 'нет ID отправителя',
                                                  post['message'], post['date']))
             except TypeError:
                 print('POST IS NONE TYPE')
@@ -72,7 +68,7 @@ def file_writer_tg(data, keywords, antiwords):
 
 
 def check_wall_vk(domain):
-    count = 500
+    count = 200
     offset = 0
     all_posts = []
     token = '735bf6a6735bf6a6735bf6a6be704c6dc47735b735bf6a616ad7155515806ec7853c8b1'
@@ -87,7 +83,7 @@ def check_wall_vk(domain):
 
     name = group_info.json()['response']['groups'][0]['name']
     all_posts.append(str(name))
-    while offset < 500:
+    while offset < 200:
         response = requests.get('https://api.vk.com/method/wall.get',
                                 params={
                                     'access_token': token,
@@ -108,7 +104,7 @@ def file_writer_vk(data, keywords, antiwords):
     with (open('vk_publics.csv', 'w', encoding="utf-8") as file):
         a_pen = csv.writer(file)
         a_pen.writerow(
-            ('Соцсеть', 'ID Паблика', 'Название паблика', 'Ссылка', 'ID Автора', 'Текст поста', 'Дата публикации'))
+            ('Название паблика', 'Ссылка', 'Текст поста', 'Дата публикации'))
         for domain, posts in data.items():
             for post in posts:
                 if type(post) != str:
@@ -121,7 +117,7 @@ def file_writer_vk(data, keywords, antiwords):
                                         ) or any(antiword.upper() in post['text'] for antiword in antiwords):
                             continue
                         else:
-                            a_pen.writerow(('VK', domain, posts[0],
+                            a_pen.writerow((posts[0],
                                             f"https://vk.com/{domain}?w=wall{post['owner_id']}_{post['id']}",
-                                            post['from_id'], post['text'],
+                                            post['text'],
                                             time.ctime(post['date'])))
