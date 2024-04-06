@@ -8,7 +8,7 @@ from telethon.tl.functions.messages import GetHistoryRequest
 
 def check_wall_tg(group, client_tg):
     limit = 100
-    total_count_limit = 500
+    total_count_limit = 1000
     all_messages = []
     offset_id = 0
     total_messages = 0
@@ -72,7 +72,7 @@ def file_writer_tg(data, keywords, antiwords):
 
 
 def check_wall_vk(domain):
-    count = 100
+    count = 500
     offset = 0
     all_posts = []
     token = '735bf6a6735bf6a6735bf6a6be704c6dc47735b735bf6a616ad7155515806ec7853c8b1'
