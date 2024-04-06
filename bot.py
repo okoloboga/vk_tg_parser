@@ -51,7 +51,7 @@ async def main():
                                                                   f'{line[-2]}')
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(message_sender, 'interval', minutes=367, kwargs={'bot': bot})
+    scheduler.add_job(message_sender, 'interval', minutes=377, kwargs={'bot': bot})
     scheduler.start()
 
     # Настройка главного меню бота
