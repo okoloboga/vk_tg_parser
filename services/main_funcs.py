@@ -57,6 +57,9 @@ def main_parsing(api_id, api_hash, phone):
         print('NO VK/TG FILES')
     file_writer_tg(total_groups, database['keywords'], database['antiwords'])
 
+    groups.clear()
+    total_groups.clear()
+
     print('TG COMPLETE')
 
 
@@ -73,5 +76,8 @@ def main_parsing(api_id, api_hash, phone):
     except FileNotFoundError:
         print('NO VK/TG FILES')
     file_writer_vk(total_data, database['keywords'], database['antiwords'])
+
+    database.clear()
+    total_data.clear()
 
     print('VK COMPLETE')
