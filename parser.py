@@ -12,7 +12,7 @@ def load_config(path: str | None = None):
 
 
 main_parsing(*load_config())
-schedule.every(6).hours.do(lambda: main_parsing(load_config()))
+schedule.every(12).hours.do(lambda: main_parsing(load_config()))
 
 while True:
     try:
