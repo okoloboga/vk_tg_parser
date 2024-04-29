@@ -38,6 +38,8 @@ def check_wall_tg(group, client_tg):
     except AttributeError:
         print('NO USERNAME: ', group)
 
+    all_messages.clear()
+
 
 def file_writer_tg(data, keywords, antiwords):
     with (open('tg_channels.csv', 'w', encoding='UTF-8') as file):
@@ -83,22 +85,25 @@ def check_wall_vk(domain):
 
     name = group_info.json()['response']['groups'][0]['name']
     all_posts.append(str(name))
-    while offset < 400:
-        response = requests.get('https://api.vk.com/method/wall.get',
-                                params={
-                                    'access_token': token,
-                                    'v': version,
-                                    'domain': domain,
-                                    'count': count,
-                                    'offset': offset
-                                }
-                                )
-        data = response.json()['response']['items']
-        offset += 100
-        all_posts.extend(data)
-        time.sleep(.5)
-    return all_posts
-
+    try:
+        while offset < 400:
+            response = requests.get('https://api.vk.com/method/wall.get',
+                                    params={
+                                        'access_token': token,
+                                        'v': version,
+                                        'domain': domain,
+                                        'count': count,
+                                        'offset': offset
+                                    }
+                                    )
+            data = response.json()['response']['items']
+            offset += 100
+            all_posts.extend(data)
+            time.sleep(.1)
+        return all_posts
+    except:
+        pass
+    all_posts.clear()
 
 def file_writer_vk(data, keywords, antiwords):
     with (open('vk_publics.csv', 'w', encoding="utf-8") as file):

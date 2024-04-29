@@ -47,9 +47,6 @@ def main_parsing(api_id, api_hash, phone):
             print('NO CHAT IN DATABASE')
             continue
 
-    chats.clear()
-    client.disconnect()
-
     for group in groups:
         total_groups[group.title] = check_wall_tg(group, client)
     print('TG CHANNELS ADDED')
@@ -62,6 +59,8 @@ def main_parsing(api_id, api_hash, phone):
 
     groups.clear()
     total_groups.clear()
+    chats.clear()
+    client.disconnect()
 
     print('TG COMPLETE')
 
