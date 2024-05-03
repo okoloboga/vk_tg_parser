@@ -1,5 +1,6 @@
 from json import load
 import time
+import logging
 from os import remove
 
 from telethon.tl.functions.messages import GetDialogsRequest
@@ -10,6 +11,17 @@ from services.parsing import check_wall_tg, file_writer_tg, check_wall_vk, file_
 
 
 def main_parsing(api_id, api_hash, phone):
+
+    # Инициализация логгера
+    logger = logging.getLogger(__name__)
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(filename)s:%(lineno)d #%(levelname)-8s '
+               '[%(asctime)s] - %(name)s - %(message)s')
+
+    logger.info('Main parsing START')
+
     with open('database/database.json', encoding='utf-8') as database_json:
         database = load(database_json)
 
@@ -17,12 +29,11 @@ def main_parsing(api_id, api_hash, phone):
     api_id = api_id
     api_hash = api_hash
     phone = phone
-    print('TG PHONE:', phone, time.ctime(time.time()))
 
     client = TelegramClient(phone, api_id, api_hash)
     client.start()
 
-    print('TG CLIENT START', time.ctime(time.time()))
+    logging.info('TG client START')
 
     chats = []
     last_date = None
@@ -53,7 +64,7 @@ def main_parsing(api_id, api_hash, phone):
         remove('vk_publics.csv')
         remove('vk_publics.xlsx')
     except FileNotFoundError:
-        print('NO VK/TG FILES', time.ctime(time.time()))
+        logging.info('N0 VK/TG files')
     file_writer_tg(total_groups, database['keywords'], database['antiwords'])
 
     groups.clear()
@@ -61,7 +72,7 @@ def main_parsing(api_id, api_hash, phone):
     chats.clear()
     client.disconnect()
 
-    print('TG COMPLETE', time.ctime(time.time()))
+    logging.info('TG complete')
 
 
     """VK"""
@@ -70,15 +81,16 @@ def main_parsing(api_id, api_hash, phone):
 
     for public_domain in database['vk_publics']:
         total_data[public_domain] = check_wall_vk(public_domain)
-    print('VK PUBLICS ADDED', time.ctime(time.time()))
+    logging.info('VK PUBLICS ADDED')
     try:
         remove('vk_publics.csv')
         remove('vk_publics.xlsx')
     except FileNotFoundError:
-        print('NO VK/TG FILES', time.ctime(time.time()))
+        logging.info('No VK/TG files')
     file_writer_vk(total_data, database['keywords'], database['antiwords'])
 
     database.clear()
     total_data.clear()
 
-    print('VK COMPLETE', time.ctime(time.time()))
+    logging.info('VK complete')
+    logging.info('Main parsing COMPLETE')

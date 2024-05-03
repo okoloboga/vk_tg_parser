@@ -54,7 +54,7 @@ async def main():
             os.remove('tg_channels.csv')
             os.remove('tg_channels.xlsx')
         except FileNotFoundError:
-            print('NO VK/TG FILES', time.ctime(time.time()))
+            logging.info('No VK/TG files')
 
     scheduler = AsyncIOScheduler()
     scheduler.add_job(message_sender, 'interval', minutes=377, kwargs={'bot': bot})

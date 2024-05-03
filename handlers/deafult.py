@@ -24,21 +24,24 @@ async def process_start_command(message: Message):
 # Обработка нажатия кнопки ВЫСЛАТЬ ДАННЫЕ
 @router.message(F.text == LEXICON['send_now'], StateFilter(default_state))
 async def process_parse_now_button(message: Message, bot: Bot):
-    tg_frame = pd.read_csv('tg_channels.csv').values.tolist()
-    vk_frame = pd.read_csv('vk_publics.csv').values.tolist()
-    for line in tg_frame:
-        await asyncio.sleep(3)
-        await bot.send_message(chat_id='-1002089059378', text=f'Канал: {line[0]}\n'
-                                                              f'Ссылка на пост: https://t.me/{line[1]}/{line[2]}\n'
-                                                              f'Дата публикации: {line[-1]}\n\n'
-                                                              f'{line[-2]}')
-    for line in vk_frame:
-        await asyncio.sleep(3)
-        await bot.send_message(chat_id='-1002089059378', text=f'Сообщество: {line[0]}\n'
-                                                              f'Ссылка на пост: {line[1]}\n'
-                                                              f'Дата публикации: {line[-1]}\n\n'
-                                                              f'{line[-2]}')
-    await message.answer(text=LEXICON['complete'])
+    try:
+        tg_frame = pd.read_csv('tg_channels.csv').values.tolist()
+        vk_frame = pd.read_csv('vk_publics.csv').values.tolist()
+        for line in tg_frame:
+            await asyncio.sleep(3)
+            await bot.send_message(chat_id='-1002089059378', text=f'Канал: {line[0]}\n'
+                                                                  f'Ссылка на пост: https://t.me/{line[1]}/{line[2]}\n'
+                                                                  f'Дата публикации: {line[-1]}\n\n'
+                                                                  f'{line[-2]}')
+        for line in vk_frame:
+            await asyncio.sleep(3)
+            await bot.send_message(chat_id='-1002089059378', text=f'Сообщество: {line[0]}\n'
+                                                                  f'Ссылка на пост: {line[1]}\n'
+                                                                  f'Дата публикации: {line[-1]}\n\n'
+                                                                  f'{line[-2]}')
+        await message.answer(text=LEXICON['complete'])
+    except FileNotFoundError:
+        await message.answer(text=LEXICON['no_files'])
 
 
 # Обработка /cancel вне состояний

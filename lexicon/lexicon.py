@@ -50,6 +50,7 @@ LEXICON: dict[str, str] = {
     'no_task': 'Нет такого задания!\n\n'
                'Введите правильный запрос или\n'
                'Для выхода нажмите /cancel',
+    'no_files': 'Нет файлов! Ждём сбор информации'
 }
 
 LEXICON_COMMANDS: dict[str, str] = {
