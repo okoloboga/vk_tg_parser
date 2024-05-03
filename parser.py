@@ -1,5 +1,4 @@
 import schedule
-import time
 
 from environs import Env
 from services.main_funcs import main_parsing
@@ -12,7 +11,7 @@ def load_config(path: str | None = None):
 
 
 main_parsing(*load_config())
-schedule.every(12).hours.do(lambda: main_parsing(load_config()))
+schedule.every(10).minutes.do(lambda: main_parsing(load_config()))
 
 while True:
     try:

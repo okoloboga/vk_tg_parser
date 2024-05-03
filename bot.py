@@ -1,7 +1,8 @@
 import asyncio
 import logging
 import pandas as pd
-import json
+import os
+import time
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from aiogram import Bot, Dispatcher
@@ -49,6 +50,11 @@ async def main():
                                                                   f'Ссылка на пост: {line[1]}\n'
                                                                   f'Дата публикации: {line[-1]}\n\n'
                                                                   f'{line[-2]}')
+        try:
+            os.remove('tg_channels.csv')
+            os.remove('tg_channels.xlsx')
+        except FileNotFoundError:
+            print('NO VK/TG FILES', time.ctime(time.time()))
 
     scheduler = AsyncIOScheduler()
     scheduler.add_job(message_sender, 'interval', minutes=377, kwargs={'bot': bot})
