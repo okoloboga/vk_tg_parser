@@ -1,5 +1,4 @@
 from json import load
-import time
 import logging
 from os import remove
 
@@ -59,12 +58,12 @@ def main_parsing(api_id, api_hash, phone):
 
     for group in groups:
         total_groups[group.title] = check_wall_tg(group, client)
-    print('TG CHANNELS ADDED', time.ctime(time.time()))
+    logging.info('TG channels added')
     try:
-        remove('vk_publics.csv')
-        remove('vk_publics.xlsx')
+        remove('tg_channels.csv')
+        logging.info('CSV TG removed')
     except FileNotFoundError:
-        logging.info('N0 VK/TG files')
+        logging.info('No TG files')
     file_writer_tg(total_groups, database['keywords'], database['antiwords'])
 
     groups.clear()
@@ -81,12 +80,12 @@ def main_parsing(api_id, api_hash, phone):
 
     for public_domain in database['vk_publics']:
         total_data[public_domain] = check_wall_vk(public_domain)
-    logging.info('VK PUBLICS ADDED')
+    logging.info('VK publicks added')
     try:
         remove('vk_publics.csv')
-        remove('vk_publics.xlsx')
+        logging.info('CSV VK removed')
     except FileNotFoundError:
-        logging.info('No VK/TG files')
+        logging.info('No VK files')
     file_writer_vk(total_data, database['keywords'], database['antiwords'])
 
     database.clear()

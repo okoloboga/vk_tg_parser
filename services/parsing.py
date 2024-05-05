@@ -1,6 +1,7 @@
 import time
 import csv
 import requests
+import logging
 from telethon.tl.functions.messages import GetHistoryRequest
 
 """TELEGRAM"""
@@ -36,12 +37,21 @@ def check_wall_tg(group, client_tg):
                 break
         return all_messages
     except AttributeError:
-        print('NO USERNAME: ', group)
+        pass
 
     all_messages.clear()
 
 
 def file_writer_tg(data, keywords, antiwords):
+
+    # Инициализация логгера
+    logger = logging.getLogger(__name__)
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(filename)s:%(lineno)d #%(levelname)-8s '
+               '[%(asctime)s] - %(name)s - %(message)s')
+
     with (open('tg_channels.csv', 'w', encoding='UTF-8') as file):
         writer = csv.writer(file, delimiter=',', lineterminator='\n')
         writer.writerow(('Паблик', 'username Канала', 'ID сообщения', 'Текст поста', 'Дата публикации'))
@@ -63,7 +73,9 @@ def file_writer_tg(data, keywords, antiwords):
                                                  post['id'],
                                                  post['message'], post['date']))
             except TypeError:
-                print('POST IS NONE TYPE')
+                logging.info('Post is NONE TYPE')
+
+    logging.info('Writing TG complete')
 
 
 """VK"""
@@ -106,6 +118,15 @@ def check_wall_vk(domain):
     all_posts.clear()
 
 def file_writer_vk(data, keywords, antiwords):
+
+    # Инициализация логгера
+    logger = logging.getLogger(__name__)
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(filename)s:%(lineno)d #%(levelname)-8s '
+               '[%(asctime)s] - %(name)s - %(message)s')
+
     with (open('vk_publics.csv', 'w', encoding="utf-8") as file):
         a_pen = csv.writer(file)
         a_pen.writerow(
@@ -126,3 +147,4 @@ def file_writer_vk(data, keywords, antiwords):
                                             f"https://vk.com/{domain}?w=wall{post['owner_id']}_{post['id']}",
                                             post['text'],
                                             time.ctime(post['date'])))
+    logging.info('Writing VK complete')
