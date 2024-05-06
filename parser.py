@@ -23,6 +23,5 @@ schedule.every(1).hour.do(lambda: main_parsing(*load_config()))
 while True:
     try:
         schedule.run_pending()
-        logger.info('shedule complete')
     except TypeError as e:
         logger.error('TypeError: ', e)
