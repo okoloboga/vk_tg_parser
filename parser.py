@@ -18,7 +18,7 @@ def load_config(path: str | None = None):
     return [env('API_ID'), env('API_HASH'), env('PHONE')]
 
 
-schedule.every(1).hour.do(lambda: main_parsing(*load_config()))
+schedule.every(30).minutes.do(lambda: main_parsing(*load_config()))
 
 while True:
     try:
